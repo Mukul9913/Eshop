@@ -1,0 +1,24 @@
+{
+  "name": "e-shopuser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.15.0",
+    "html": "^1.0.0",
+    "mysql2": "^3.2.0",
+    "node-fetch": "^3.3.1",
+    "session": "^0.1.0"
+  }
+}

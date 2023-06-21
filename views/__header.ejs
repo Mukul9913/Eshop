@@ -1,0 +1,179 @@
+<header class="header shop">
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-md-12 col-12">
+                    <% let name=currentUser ? currentUser.name:"" %>
+                        <% let email=currentUser ? currentUser.email:"" %>
+
+                            <!-- Top Left -->
+                            <div class="top-left">
+                                <ul class="list-main">
+                                    <li><i class="ti-user"></i>
+                                        <%=name%>
+                                    </li>
+                                    <li><i class="ti-email"></i>
+                                        <%=email%>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--/ End Top Left -->
+                </div>
+                <div class="col-lg-7 col-md-12 col-12">
+                    <!-- Top Right -->
+                    <div class="right-content">
+                        <ul class="list-main">
+                            <li><i class="ti-location-pin"></i> Store location</li>
+                            <li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li>
+
+                            <% if(currentUser){%>
+                                <li><i class="ti-power-off"></i><a href="/signOut">SignOut</a></li>
+                                <%}else{%>
+                                    <li><i class="ti-power-off"></i><a href="/signIn">Login</a></li>
+                                    <li><i class="ti-user"></i> <a href="/signUp">Sign Up</a></li>
+                                    <%}%>
+                                        <li>
+                                            <% let id=currentUser ? currentUser.id:"" %>
+                                                <a href="/cart/cartList" class="single-icon"><i
+                                                        class="fa-solid fa-cart-shopping"></i>Cart</a>
+                                        </li>
+                                        <li><a href="/order/history" class="single-icon"><i
+                                                    class="fa-brands fa-first-order-alt"></i>View
+                                                orders</a></li>
+                        </ul>
+                    </div>
+                    <!-- End Top Right -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Topbar -->
+    <div class="middle-inner">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-12">
+                    <!-- Logo -->
+                    <div class="logo">
+                        <a href="index.html"><img src="/images/logo.png" alt="logo"></a>
+                    </div>
+                    <!--/ End Logo -->
+                    <!-- Search Form -->
+                    <div class="search-top">
+                        <div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
+                        <!-- Search Form -->
+                        <div class="search-top">
+                            <form class="search-form">
+                                <input type="text" onkeyup="searchProduct(this.value)" placeholder="Search here..."
+                                    name="search">
+                                <button value="search" type="submit"><i class="ti-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--/ End Search Form -->
+                    <div class="mobile-nav"></div>
+                </div>
+                <div class="col-lg-8 col-md-7 col-12">
+                    <div class="search-bar-top">
+                        <div class="search-bar">
+                            <form>
+                                <input type="text" placeholder="Search product from here"
+                                    onkeyup="searchProduct(this.value)">
+                                <button class="btnn"><i class="ti-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function searchProduct(keyword) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/product/product-search/" + keyword, true);
+            xhttp.send();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState = 4) {
+                    let data = xhttp.responseText;
+                    data = JSON.parse(data);
+                    let productView = "";
+                    for (let product of data.productList) {
+                        let priceString = '';
+                        if (product.discountPercentage) {
+                            priceString = ' <del class="text-danger">' + product.price + '</del>' +
+                                '<span class="text-success">' + Math.round(product.price - ((product.price * product.discountPercentage) / 100)) + ' Rs.</span>';
+
+                        }
+                        else {
+                            priceString = '<span class="text-success">' + product.price + ' Rs.</span>'
+                        }
+                        productView = productView + '<div class="col-xl-3 col-lg-4 col-md-4 col-12">' +
+                            '<div style=" box-shadow: 5px 5px 5px;">' +
+                            '<img class="default-img" src="' + product.thumbnail + '"style="width: 230px;height: 230px; border-radius: 2%;"alt="#">' +
+                            '<h3 class="text-center mt-2">' + product.title.substring(0, 20) + '</h3>' +
+                            '<p class="text-center" style="font-size: 20px;">' +
+                            'Price :' + priceString +
+                            '</p>' +
+                            '<h6 style="cursor:pointer;" class="text-center mt-2 mb-3 text-primary">View description</h6>' +
+                            '<div class="text-center">' +
+
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+
+                    }
+                    document.getElementById("product-display").innerHTML = productView;
+                }
+            }
+        }
+    </script>
+    <!-- Header Inner -->
+    <div class="header-inner">
+        <div class="container">
+            <div class="cat-nav-head">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <!-- category -->
+                    </div>
+                    <div class="col-lg-9 col-12">
+                        <div class="menu-area" style>
+                            <!-- Main Menu -->
+                            <nav class="navbar navbar-expand-lg">
+                                <div class="navbar-collapse">
+                                    <div class="nav-inner">
+                                        <ul class="nav main-menu menu navbar-nav">
+                                            <li class="active"><a href="/">Home</a></li>
+                                            <li class=""><a href="/product/all">Product</a></li>
+                                            <li><a href="#">Service</a></li>
+                                            <li><a href="#">Category<i class="ti-angle-down"></i><span
+                                                        class="new">New</span></a>
+
+                                                <ul class="dropdown">
+                                                    <%categoryList.map((category,index)=>{%>
+                                                        <li>
+
+                                                            <a>
+                                                                <%=category.categoryName%>
+                                                            </a>
+                                                        </li>
+                                                        <%})%>
+
+                                                </ul>
+
+                                            </li>
+                                            <li><a href="contact.html">Contact Us</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                            <!--/ End Main Menu -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Active JS -->
+<script src="js/active.js"></script>
+<script src="https://kit.fontawesome.com/a94c1b453e.js" crossorigin="anonymous"></script>

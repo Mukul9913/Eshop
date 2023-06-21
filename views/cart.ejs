@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <!-- Meta Tag -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name='copyright' content=''>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Title Tag  -->
+    <title>Eshop-cart page</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <!-- Web Font -->
+    <%- include('externallink.ejs')%>
+</head>
+
+<body class="js">
+
+    <script>
+        function loadCartItem() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/cart/load-cart", true);
+            xhttp.send();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState == 4) {
+
+                    let data = JSON.parse(xhttp.responseText);
+                    let totalBillAmount = 0;
+                    data = data.map((item, index) => {
+                        item.qty = 1;
+                        totalBillAmount += item.price;
+                        return item;
+                    })
+                    document.getElementById("totalBillAmount").innerHTML = "" + totalBillAmount;
+                    localStorage.setItem("cart-items", JSON.stringify(data))
+                    // console.log(data)
+                }
+            }
+        }
+        function changeQty(index) {
+            let updateQty = document.getElementById("qty" + index).value;
+            let priceObject = document.getElementById("price" + index);
+            let totalBillAmountObject = document.getElementById("totalBillAmount");
+
+            let data = localStorage.getItem("cart-items")
+            data = JSON.parse(data);
+            data[index].qty = updateQty;
+            let updatedPrice = updateQty * data[index].price;
+            priceObject.innerHTML = "" + updatedPrice;
+            let ammount = 0;
+            data.map((item, index) => {
+                ammount = ammount + item.price * item.qty;
+                totalBillAmountObject.innerHTML = "" + ammount;
+            })
+
+            localStorage.setItem("cart-items", JSON.stringify(data));
+        }
+
+        function getDataFromStorage() {
+            let hiddenField = document.getElementById("cart")
+            hiddenField.value = localStorage.getItem("cart-items")
+        }
+
+        loadCartItem();
+
+    </script>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="bread-inner">
+                        <ul class="bread-list">
+                            <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+                            <li class="active"><a href="/cart">Cart</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Shopping Cart -->
+    <div class="shopping-cart section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Shopping Summery -->
+                    <table class="table shopping-summery">
+                        <thead>
+                            <tr class="main-hading">
+                                <th>PRODUCT</th>
+                                <th>NAME</th>
+                                <th class="text-center">STOCK</th>
+                                <th class="text-center">QUANTITY</th>
+                                <th class="text-center">TOTAL</th>
+                                <th class="text-center"><i class="ti-trash remove-icon"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <%cartItems.map((product,index)=>{%>
+                                <tr>
+                                    <td class="image" data-title="No"><img src="<%=product.thumbnail%>" alt="#">
+                                    </td>
+                                    <td class="product-des" data-title="Description">
+                                        <p class="product-name"><a href="#">
+                                                <%=product.title%>
+                                            </a></p>
+                                        <p class="product-des">
+                                            <%=product.brand%>
+                                        </p>
+                                    </td>
+                                    <td class="stock" data-title="stock"><span>
+                                            <%=product.stock%>
+                                        </span></td>
+                                    <td class="qty" data-title="Qty">
+                                        <input type="number" name="" id="qty<%=index%>"
+                                            onchange="changeQty('<%=index%>')" class="form-control" value="1" min="1"
+                                            max="<%=product.stock%>" required="required" style="width:10vh;">
+                                    </td>
+                                    <td class="total-amount" data-title="Total"><span id="price<%=index%>">
+                                            <%=product.price%>
+                                        </span></td>
+                                    <td class="action" data-title="Remove"><a
+                                            href="/cart/delete/<%=product.productId%>"><i
+                                                class="ti-trash remove-icon"></i></a></td>
+                                </tr>
+                                <%})%>
+                        </tbody>
+                    </table>
+                    <!--/ End Shopping Summery -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <!-- Total Amount -->
+                    <div class="total-amount">
+                        <div class="row">
+                            <div class="col-lg-7 col-md-7 col-12"></div>
+                            <div class="col-lg-5 col-md-7 col-12">
+                                <div class="right">
+                                    <ul>
+                                        <h2>Order Summary</h2><br>
+                                        <li>Total Items<span>
+
+                                                <%=cartItems.length%>
+                                            </span></li>
+                                        <li>Cart Subtotal<span id="totalBillAmount">11</span></li>
+                                        <li>Shipping<span>Free</span></li>
+                                    </ul>
+                                    <div class="button5">
+                                        <a onclick="getDataFromStorage()" data-toggle="modal" data-target="#myModal"
+                                            class="btn" style="width:100%">Checkout</a>
+                                        <a href="/" class="btn">Continue shopping</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--/ End Total Amount -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ End Shopping Cart -->
+
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <form action="/order/save" method="post">
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true" style="margin-top: -90px;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Enter Delivery Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mt-5">
+
+
+                        <div class="container-fluid">
+                            <div class="form-group">
+                                <label for="">Contact Person</label>
+                                <input type="text" name="contactPerson" id="" class="form-control" placeholder=""
+                                    style="width: 80vh;">
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="form-group">
+                                <label for="">Contact number</label>
+                                <input type="text" name="contactNumber" id="" class="form-control" placeholder=""
+                                    style="width: 80vh;">
+                            </div>
+                            <div class="container-fluid">
+                                <div class="form-group">
+                                    <label for="">Address</label>
+                                    <textarea name="deliveryAddress" class="form-control" cols=" 30"
+                                        rows="10"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="cartItems" id="cart" />
+                        <div class="modal-header">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+    <!-- Start Footer Area -->
+    <%- include('__footer.ejs')%>
+        <!-- Jquery -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery-migrate-3.0.0.js"></script>
+        <script src="js/jquery-ui.min.js"></script>
+        <!-- Popper JS -->
+        <script src="js/popper.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="js/bootstrap.min.js"></script>
+        <!-- Color JS -->
+        <script src="js/colors.js"></script>
+        <!-- Slicknav JS -->
+        <script src="js/slicknav.min.js"></script>
+        <!-- Owl Carousel JS -->
+        <script src="js/owl-carousel.js"></script>
+        <!-- Magnific Popup JS -->
+        <script src="js/magnific-popup.js"></script>
+        <!-- Fancybox JS -->
+        <script src="js/facnybox.min.js"></script>
+        <!-- Waypoints JS -->
+        <script src="js/waypoints.min.js"></script>
+        <!-- Countdown JS -->
+        <script src="js/finalcountdown.min.js"></script>
+        <!-- Nice Select JS -->
+        <script src="js/nicesellect.js"></script>
+        <!-- Ytplayer JS -->
+        <script src="js/ytplayer.min.js"></script>
+        <!-- Flex Slider JS -->
+        <script src="js/flex-slider.js"></script>
+        <!-- ScrollUp JS -->
+        <script src="js/scrollup.js"></script>
+        <!-- Onepage Nav JS -->
+        <script src="js/onepage-nav.min.js"></script>
+        <!-- Easing JS -->
+        <script src="js/easing.js"></script>
+        <!-- Active JS -->
+        <script src="js/active.js"></script>
+
+</body>

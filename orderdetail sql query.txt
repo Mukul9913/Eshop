@@ -1,0 +1,18 @@
+create table order_detail(id int primary key auto_increment,
+userId int,foreign key(userId) references user(id),date varchar(50),billAmount int,contactPerson varchar(100),contactNumber varchar(100),deliveryAddress varchar(300),status varchar(20) default 'received',paymentMode varchar(10);
+
+create table order_items(id int primary key auto_increment,orderDetailsId varchar(100),foreign key(orderDetailId) references oder_detail(id),productId int, foreign key(productId) references product(id),qty int);
+
+
+
+<!-- <%if(cartItems.length){%> -->
+
+ <!-- <%}else{%>
+
+                <h1 class="text-center mt-5"><i class="fa fa-cart-arrow-down mt-5" aria-hidden="true">Your Cart Is
+                        Empty
+                        <div class="btn btn-warning mt-5">
+                            <a href="/" class="btn">Continue shopping</a>
+                        </div>
+                    </i></h1>
+                <%}%> -->

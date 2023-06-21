@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Site</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mt-5"
+                style="margin-left: 360px;border: 1px solid rgb(186, 186, 186); height: 500px; border-radius: 1%;">
+                <header>
+                    <div class="jumbotron jumbotron-fluid">
+                        <h2 class="display-5 text-center mt-3" style="color: #F7941D;">Login form</h2>
+                    </div>
+                </header>
+                <form action="/signIn" method="post">
+                    <div class="form-group mt-4 input-group-sm">
+                        <label for="">Enter email</label>
+                        <input type="email" class="form-control" name="email" id="inputemail" onchange="enterEmail()"
+                            aria-describedby="emailHelpId" placeholder="">
+                        <small id="emailHelpId" class="form-text text-muted">Help text</small>
+                    </div>
+                    <div class="form-group mt-3 input-group-sm">
+                        <label for="">Enter Password</label>
+                        <input type="password" class="form-control" name="password" id="inputpassword" placeholder=""
+                            onchange="validatePassword()">
+                        <small id="passwordHelpId" class="form-text text-muted">Help text</small>
+
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label mt-3">
+                            <input type="checkbox" class="form-check-input form-select-sm" name="" id=""
+                                value="checkedValue" checked>
+                            Remember me
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-sm mt-4 col-12" onclick="return validateData()"
+                        style="background-color:#F7941D">Submit</button>
+                    <a href="/signUp" type="submit" class="btn btn-sm mt-4 col-12" style="background-color:gray">Create
+                        new
+                        Account</a>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        function enterEmail() {
+            var status = true;
+            var email = document.getElementById("inputemail").value;
+            var emailError = document.getElementById("emailHelpId");
+            email = email.trim();
+            if (email.length == 0) {
+                status = false;
+                emailError.innerHTML = "email is required".fontcolor("red");
+                emailError.style.color = "red";
+            }
+            else {
+                var atTheRateIndex = email.indexOf('@');
+                var secondAtTheReateIndex = email.lastIndexOf('@');
+                var dotIndex = email.indexOf('.');
+                if (atTheRateIndex == -1) {
+                    status = false;
+                    emailError.innerHTML = "Invalid email(@ missing)".fontcolor("red");;
+                    emailError.style.color = "red";
+                }
+                else if (secondAtTheReateIndex != atTheRateIndex) {
+                    status = false;
+                    emailError.innerHTML = "Invalid email".fontcolor("red");
+                    emailError.style.color = "red";
+                }
+                else if (dotIndex == -1) {
+                    status = false;
+                    emailError.innerHTML = "Invalid email(. missing)".fontcolor("red");;
+                    emailError.style.color = "red";
+                }
+                else {
+                    var stringAfterAtTheRate = email.substring(atTheRateIndex);
+                    var lastDotIndex = stringAfterAtTheRate.indexOf(".");
+                    if (lastDotIndex == -1) {
+                        status = false;
+                        emailError.innerHTML = "Invalid email(. missing in domain)".fontcolor("red");;
+                        emailError.style.color = "red";
+                    }
+                    else {
+                        var inOrCom = stringAfterAtTheRate.substring(lastDotIndex + 1);
+                        if (inOrCom.length < 2) {
+                            status = false;
+                            emailError.innerHTML = "Invalid email".fontcolor("red").fontcolor("red");;
+                            emailError.style.color = "red";
+                        }
+                        else {
+
+                            if (stringAfterAtTheRate.substring(1, lastDotIndex).length == 0) {
+                                status = false;
+                                emailError.innerHTML = "Invalid Email".fontcolor("red");
+                                emailError.style.color = "red";
+                            }
+                            else
+                                emailError.innerHTML = "";
+                        }
+                    }
+                }
+            }
+            return status;
+        }
+
+        function validatePassword() {
+            function checkForSpecificLetter(data, i, j) {
+                for (index in data) {
+                    if (data[index] >= i && data[index] <= j)
+                        return true;
+                }
+                return false;
+            }
+            status = true;
+            var password = document.getElementById("inputpassword").value;
+            var passwordError = document.getElementById("passwordHelpId");
+            if (password.length == 0) {
+                status = false;
+                passwordError.innerHTML = "password is required".fontcolor("red");;
+                passwordError.style.color = "red";
+            }
+            else if (password.length < 8) {
+                status = false;
+                passwordError.innerHTML = "password must be at least 8 letter long.".fontcolor("red");;
+                passwordError.style.color = "red";
+            }
+
+            else if (!checkForSpecificLetter(password, 'A', 'Z')) {
+
+                status = false;
+                passwordError.innerHTML = "password must have 1 uppercase letter".fontcolor("red");;
+                passwordError.style.color = "red";
+            }
+            else if (!checkForSpecificLetter(password, '0', '9')) {
+                status = false;
+                passwordError.innerHTML = "password must have 1 digit";
+                passwordError.style.color = "red";
+            }
+            else if (!checkForSpecialSymbol(password)) {
+                status = false;
+                passwordError.innerHTML = "password must have 1 special symbol($,#,@)".fontcolor("red");
+                passwordError.style.color = "red";
+            }
+            else
+                passwordError.innerHTML = "";
+            return status;
+        }
+        function validateData() {
+            // var nameStatus = enterName();
+            var passwordStatus = validatePassword();
+            var emailStatus = enterEmail();
+            if (nameStatus && passwordStatus &&
+                emailStatus
+            )
+                return true;
+            return false;
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Eshop</title>
+</head>
+<%- include('externallink.ejs')%>
+    <style>
+        #mainimage {
+            height: 30vw;
+            width: 30vw;
+        }
+
+        #smallimage:hover {
+            box-shadow: 2px 2px 6px rgb(11, 20, 118);
+
+        }
+
+        .slideshow-items {
+            width: 500px;
+        }
+
+        .slideshow-thumbnails {
+            width: 100px;
+        }
+
+        #slideshow-items-container {
+            display: inline-block;
+            position: relative;
+        }
+
+        #lens {
+            background-color: rgba(233, 233, 233, 0.4)
+        }
+
+        #lens,
+        #result {
+            position: absolute;
+            display: none;
+            z-index: 1;
+        }
+
+        .slideshow-items {
+            display: none;
+        }
+
+        .slideshow-items.active {
+            display: block;
+        }
+
+        .slideshow-thumbnails {
+            opacity: 0.5;
+        }
+
+        .slideshow-thumbnails.active {
+            opacity: 1;
+        }
+
+        #lens,
+        .slideshow-items,
+        .slideshow-thumbnails,
+        #result {
+            border: solid var(--light-grey-2) 1px;
+        }
+    </style>
+    <script>
+        function changeImage(smallimage) {
+            var mainimage = document.getElementById("mainimage")
+            var temp = mainimage.src;
+            mainimage.src = smallimage.src;
+            smallimage.src = temp;
+        }
+
+        $(document).ready(function () {
+
+            $('.slideshow-thumbnails').hover(function () { changeSlide($(this)); });
+
+            $(document).mousemove(function (e) {
+                var x = e.clientX; var y = e.clientY;
+
+                var x = e.clientX; var y = e.clientY;
+
+                var imgx1 = $('.slideshow-items.active').offset().left;
+                var imgx2 = $('.slideshow-items.active').outerWidth() + imgx1;
+                var imgy1 = $('.slideshow-items.active').offset().top;
+                var imgy2 = $('.slideshow-items.active').outerHeight() + imgy1;
+
+                if (x > imgx1 && x < imgx2 && y > imgy1 && y < imgy2) {
+                    $('#lens').show(); $('#result').show();
+                    imageZoom($('.slideshow-items.active'), $('#result'), $('#lens'));
+                } else {
+                    $('#lens').hide(); $('#result').hide();
+                }
+
+            });
+
+        });
+
+        function imageZoom(img, result, lens) {
+
+            result.width(img.innerWidth()); result.height(img.innerHeight());
+            lens.width(img.innerWidth() / 2); lens.height(img.innerHeight() / 2);
+
+            result.offset({ top: img.offset().top, left: img.offset().left + img.outerWidth() + 10 });
+
+            var cx = img.innerWidth() / lens.innerWidth(); var cy = img.innerHeight() / lens.innerHeight();
+
+            result.css('backgroundImage', 'url(' + img.attr('src') + ')');
+            result.css('backgroundSize', img.width() * cx + 'px ' + img.height() * cy + 'px');
+
+            lens.mousemove(function (e) { moveLens(e); });
+            img.mousemove(function (e) { moveLens(e); });
+            lens.on('touchmove', function () { moveLens(); })
+            img.on('touchmove', function () { moveLens(); })
+
+            function moveLens(e) {
+                var x = e.clientX - lens.outerWidth() / 2;
+                var y = e.clientY - lens.outerHeight() / 2;
+                if (x > img.outerWidth() + img.offset().left - lens.outerWidth()) { x = img.outerWidth() + img.offset().left - lens.outerWidth(); }
+                if (x < img.offset().left) { x = img.offset().left; }
+                if (y > img.outerHeight() + img.offset().top - lens.outerHeight()) { y = img.outerHeight() + img.offset().top - lens.outerHeight(); }
+                if (y < img.offset().top) { y = img.offset().top; }
+                lens.offset({ top: y, left: x });
+                result.css('backgroundPosition', '-' + (x - img.offset().left) * cx + 'px -' + (y - img.offset().top) * cy + 'px');
+            }
+        }
+    </script>
+
+    <body id="page-top" style="background-color: #f8f9fa;">
+        <div class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bread-inner">
+                            <ul class="bread-list">
+                                <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+                                <li class="active"><a href="/cart/cartList">Cart</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+                    <div class="container-fluid">
+                        <header>
+                            <div class="col-12">
+                                <div class="section-title">
+                                    <h2>Product Viewer</h2>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="container">
+                            <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
+                                <div class="col-lg-6 col-md-6 d-flex">
+
+                                    <div class="col-lg-3 col-md-3">
+                                        <% let allimage=productList.imageArray.trim().split(" ")%>
+                                            <%for(let image of allimage){%>
+                                                <img src=" <%=image%>" id="smallimage" style="height: 70px;width:
+                                            70px;"
+                                            class="mb-3
+                                            mt-3" onclick="changeImage(this)">
+                                            <%}%>
+                                    </div>
+                                    <div id='lens'></div>
+                                    <img class='slideshow-items active' src=' <%=productList.thumbnail%>'
+                                        class="img-fluid img" id="mainimage">
+                                    <div id='result'
+                                        style="border: 1px solid rgb(38, 38, 38); border-radius: 2%;box-shadow: 5px 5px 20px;">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 offset-1">
+                                    <h6 class="disabled">
+                                        <%=productList.category%>
+                                    </h6>
+                                    <br>
+                                    <h1 class="title" style="color: black;">
+                                        <%=productList.title.toUpperCase()%>
+                                    </h1>
+                                    <br>
+                                    <h5>
+                                        Discount(%): <%=productList.discountPercentage%>
+                                    </h5>
+                                    <br>
+                                    <h4>
+                                        Rating: <span id=stars></span>
+                                        <small>
+                                            <%=productList.rating%>
+                                        </small>
+                                    </h4>
+                                    <br>
+                                    <h4 style="color: brown;">
+                                        <div class="product-price">
+                                            <span style="color: black;">MRP:
+                                                <del style="color:red">&#8377;
+                                                    <%=productList.price%>
+                                                </del>
+                                                <br>
+                                            </span>
+                                            <br>
+                                            <span>Deal of the day
+                                                &#8377;<%=Math.round(productList.price-(productList.price*productList.discountPercentage)
+                                                    /100)%></i>
+                                            </span>
+                                        </div>
+                                    </h4>
+                                    <br>
+                                    <div class="card border-warning">
+                                        <div class="card-body">
+                                            <h5 class="card-title product-des"> Description:<br>
+                                                <%=productList.description%>
+                                            </h5>
+                                            <p class="card-text"><i class="fa fa-bomb" aria-hidden="true">OFFER</i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+        <script>
+
+            document.getElementById("stars").innerHTML = getStars('<%=productList.rating%>');
+
+            function getStars(rating) {
+
+                // Round to nearest half
+                rating = Math.round(rating * 2) / 2;
+                let output = [];
+
+                // Append all the filled whole stars
+                for (var i = rating; i >= 1; i--)
+                    output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+                // If there is a half a star, append it
+                if (i == .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+                // Fill the empty stars
+                for (let i = (5 - rating); i >= 1; i--)
+                    output.push('<i class="fa fa-star-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+                return output.join('');
+
+            }
+
+        </script>
+
+    </body>
+
+</html>

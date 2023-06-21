@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <!-- Meta Tag -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name='copyright' content=''>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Title Tag  -->
+    <title>Eshop Shoping Site</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <!-- Web Font -->
+    <%- include('externallink.ejs')%>
+</head>
+
+<body class="js" style="background-color: #f8f9fa;">
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="bread-inner">
+                        <ul class="bread-list">
+                            <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+                            <li class="active"><a href="/cart/cartList">Cart</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col">
+                <div class="card card-2">
+                    <header>
+                        <div class="col-12">
+                            <div class="section-title">
+                                <h2>Order History</h2>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="row-cols-12 justify-content-center align-items-center g-2">
+                        <%orderProduct.map((order,index)=>{%>
+                            <%if(index==0){%>
+                                <div class="col d-flex">
+                                    <h5> Order ID:#</h5>
+                                    <%=order.id%>
+                                </div>
+                                <div class="col d-flex">
+                                    <h5>Order Date:</h5>
+                                    <%=order.date%>
+                                </div>
+                                <div class="col d-flex">
+                                    <h5>Deliver Address:</h5>
+                                    <%=order.deliveryAddress%>
+                                </div>
+                                <div class="col d-flex">
+                                    <h5>Total Bill Amount:</h5>
+                                    <%=order.billAmount%>
+                                </div>
+                                <%}%>
+                                    <%})%>
+
+                    </div>
+                    <%orderProduct.map((order,index)=>{%>
+                        <div class="accordion" id="accordionExample">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse"
+                                            data-target="#collapseOne<%=index%>" aria-expanded="true"
+                                            aria-controls="collapseOne">
+                                            <%=order.title%>
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="collapseOne<%=index%>" class="collapse show" aria-labelledby="headingOne"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+
+                                        <table class="table-striped table-hover table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product Image</th>
+                                                    <th>Title
+
+                                                    </th>
+                                                    <th>Qty.</th>
+
+                                                    <th>Description</th>
+                                                    <th>Buy</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+
+                                                        <img src=" <%=order.thumbnail%>" class="img-responsive"
+                                                            style="width: 5rem;height: 5rem;" alt="Image">
+
+                                                    </td>
+                                                    <td>
+                                                        <%=order.title%>
+                                                            <small>
+                                                                <%=order.brand%>
+                                                            </small>
+                                                    </td>
+                                                    <td>
+                                                        <%=order.qty%>
+                                                    </td>
+
+                                                    <td>
+                                                        <%=order.description%>
+                                                    </td>
+                                                    <td class="col-lg-2">
+
+                                                        <a href="/product/view/<%=order.userName%>"><button
+                                                                type="button" class="btn-sm btn-warning btn-outline m-2"
+                                                                style="border-radius: 1rem;">Buy
+                                                                Again</button></a>
+                                                        <button type="button" class="btn-sm btn-light btn-outline m-2"
+                                                            style="border-radius: 1rem;">View
+                                                            Product</button>
+                                                        <a href="review.html"><button type="button"
+                                                                class="btn-sm btn-light btn-outline m-2"
+                                                                style="border-radius: 1rem;">Add review</button></a>
+                                                        <button type="button" class="btn-sm btn-light btn-outline m-2"
+                                                            style="border-radius: 1rem;">Return
+                                                            Product</button>
+
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <%})%>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ End Header -->
+
+    <%- include('__footer.ejs')%>
+        <!-- Jquery -->
+
+        <!-- Popper JS -->
+
+</body>
+
+</html>
